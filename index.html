@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="efr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style/pages/index.css">
+  <title>Document</title>
+</head>
+<body>
+  <header>
+    <a href="./index.html" aria-label="lien accueil">
+      <img src="./assets/logo/15973932905401_logo (1).png" alt="Logo de 'les petits plats'">
+    </a>
+  </header>
+
+  <nav>
+    <section id="search">
+      <div id="search__container">
+        <input type="text" class="search__input" placeholder="Rechercher une recette"/>
+        <button class="search__button">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </section>
+
+    <section id="filters">
+    </section>
+  </nav>
+
+  <main>
+    <section id="recipes">
+      <!-- each recipe is added here dynamically via js -->
+    </section>
+  </main>
+</body>
+
+<script src="./js/pages/index.js" type="modules"></script>
+</html>
