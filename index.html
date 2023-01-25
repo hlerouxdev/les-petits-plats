@@ -8,13 +8,13 @@
   <title>Document</title>
 </head>
 <body>
-  <header>
+  <header class="container">
     <a href="./index.html" aria-label="lien accueil">
       <img src="./assets/logo/15973932905401_logo (1).png" alt="Logo de 'les petits plats'">
     </a>
   </header>
 
-  <nav>
+  <nav class="container">
     <section id="search">
       <div id="search__container">
         <input type="text" class="search__input" placeholder="Rechercher une recette"/>
@@ -25,15 +25,21 @@
     </section>
 
     <section id="filters">
+      <div id="filters__active"></div>
+      <div id="filters__group">
+        <button class="filters__ing" data-open="false"#search>Ingrédients</button>
+        <button class="filters__app" data-open="false">Appareils</button>
+        <button class="filters__ust" data-open="false">Ustensils</button>
+      </div>
     </section>
   </nav>
 
-  <main>
+  <main class="container">
     <section id="recipes">
       <!-- each recipe is added here dynamically via js -->
     </section>
   </main>
 </body>
-
+<script src="https://kit.fontawesome.com/19b5c527b2.js" crossorigin="anonymous"></script>
 <script src="./js/pages/index.js" type="modules"></script>
 </html>

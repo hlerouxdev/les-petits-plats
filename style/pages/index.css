@@ -3,3 +3,47 @@ header {
   display: flex;
   justify-content: center;
 }
+
+.container {
+  width: 100%;
+  padding: 10px 100px;
+}
+
+#search {
+  background-color: #E7E7E7;
+  border-radius: 5px;
+  padding: 20px 10px;
+  width: 100%;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+#search input, #search button {
+  background-color: transparent;
+  border: none;
+}
+
+#filters button {
+  color: white;
+  padding: 15px 23px;
+  border: none;
+  border-radius: 5px;
+}
+
+#filters__group {
+  display: flex;
+  gap: 50px;
+}
+
+.filters__ing {
+  background-color: #3282F7;
+}
+
+.filters__app {
+  background-color: #68D9A4;
+}
+
+.filters__ust {
+  background-color: #ED6454;
+}
