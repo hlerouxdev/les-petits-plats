@@ -1,45 +1,59 @@
 <!DOCTYPE html>
 <html lang="efr">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./style/pages/index.css">
-  <title>Document</title>
-</head>
-<body>
-  <header class="container">
-    <a href="./index.html" aria-label="lien accueil">
-      <img src="./assets/logo/15973932905401_logo (1).png" alt="Logo de 'les petits plats'">
-    </a>
-  </header>
 
-  <nav class="container">
-    <section id="search">
-      <div id="search__container">
-        <input type="text" class="search__input" placeholder="Rechercher une recette"/>
-        <button class="search__button">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </div>
-    </section>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style/pages/index.css">
+    <title>Document</title>
+  </head>
 
-    <section id="filters">
-      <div id="filters__active"></div>
-      <div id="filters__group">
-        <button class="filters__ing" data-open="false"#search>Ingrédients</button>
-        <button class="filters__app" data-open="false">Appareils</button>
-        <button class="filters__ust" data-open="false">Ustensils</button>
-      </div>
-    </section>
-  </nav>
+  <body>
+    <header class="container">
+      <a href="./index.html" aria-label="lien accueil">
+        <img src="./assets/logo/15973932905401_logo (1).png" alt="Logo de 'les petits plats'">
+      </a>
+    </header>
 
-  <main class="container">
-    <section id="recipes">
-      <!-- each recipe is added here dynamically via js -->
-    </section>
-  </main>
-</body>
-<script src="https://kit.fontawesome.com/19b5c527b2.js" crossorigin="anonymous"></script>
-<script src="./js/pages/index.js" type="modules"></script>
+    <nav class="container">
+      <section id="search">
+        <div id="search__container">
+          <input type="text" class="search__input" placeholder="Rechercher une recette" />
+          <button class="search__button">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </section>
+
+      <section id="filters">
+        <div id="filters__active"></div>
+        <div id="filters__group">
+          <button class="filters__ing" data-open="false" #search>
+            Ingrédients
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <button class="filters__app" data-open="false">
+            Appareils
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <button class="filters__ust" data-open="false">
+            Ustensils
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+        </div>
+      </section>
+    </nav>
+
+    <main class="container">
+      <section id="recipes">
+        <!-- each recipe is added here dynamically via js -->
+      </section>
+    </main>
+
+    <script src="https://kit.fontawesome.com/19b5c527b2.js" crossorigin="anonymous"></script>
+    <script src="./js/pages/index.js" type="module"></script>
+
+  </body>
+
 </html>

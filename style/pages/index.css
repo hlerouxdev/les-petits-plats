@@ -1,25 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+body, input, button {
+  font-family: 'Lato', sans-serif;
+}
+
 header {
-  width: 100%;
   display: flex;
   justify-content: center;
 }
 
 .container {
-  width: 100%;
   padding: 10px 100px;
+  max-width: 1400px;
+  margin: auto;
 }
 
 #search {
+  margin: 10px 0;
+  position: relative;
+}
+
+#search i {
+  font-size: 32px;
+}
+
+#search input {
   background-color: #E7E7E7;
+  border: none;
   border-radius: 5px;
   padding: 20px 10px;
   width: 100%;
-  margin: 10px 0;
-  display: flex;
-  justify-content: space-between;
+  font-size: 18px;
 }
 
-#search input, #search button {
+#search button {
+  position: absolute;
+  top:  12px;
+  right: 0;
   background-color: transparent;
   border: none;
 }
@@ -46,4 +63,40 @@ header {
 
 .filters__ust {
   background-color: #ED6454;
+}
+
+#recipes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.recipe__card {
+  width: 380px;
+  height: 364px;
+  border-radius: 5px;
+  background-color: #E7E7E7;
+  margin-bottom: 50px;
+}
+
+.recipe__card img {
+  width: 380px;
+  height: 178px;
+  object-fit: cover;
+  border-radius: 5px 5px 0 0;
+}
+
+.recipe__card__title, .recipe__card__infos {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.recipe__card__title__time {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.recipe__card__infos__ingrediets, .recipe__card__infos__description {
+  width: 50%;
 }
