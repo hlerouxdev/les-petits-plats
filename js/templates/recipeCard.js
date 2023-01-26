@@ -11,6 +11,7 @@ export class RecipeCard {
     })
     const card = document.createElement('article');
     card.setAttribute('class', 'recipe__card');
+    card.setAttribute('data-id', this.$recipe.id)
     card.innerHTML = `
       <img src="../assets/hugo.png" alt="${this.$recipe.name}">
       <div class="recipe__card__title">
