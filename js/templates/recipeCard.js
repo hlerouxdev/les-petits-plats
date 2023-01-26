@@ -4,11 +4,11 @@ export class RecipeCard {
     this.$ingredients = recipe.ingredients
   }
 
-  displayIngredient(element) {
-    return `<p><strong>${element.ingredient}</strong>: ${element.quantity} ${element.unit}</p>`
-  } 
-
   createCard() {
+    let ingredientList = ''
+    this.$ingredients.map( element => {
+      ingredientList += `<p><strong>${element.ingredient}</strong>: ${element.quantity} ${element.unit}</p>`
+    })
     const card = document.createElement('article');
     card.setAttribute('class', 'recipe__card');
     card.innerHTML = `
@@ -22,16 +22,11 @@ export class RecipeCard {
       </div>
       <div class="recipe__card__infos">
         <div class="recipe__card__infos__ingrediets">
-          ${
-            this.$ingredients.forEach(ingredient => {
-              console.log(this.$ingredients);
-              this.displayIngredient(ingredient);
-            })
-          }
+          ${ingredientList}
         </div>
-        <div class="recipe__card__infos__description">
+        <p class="recipe__card__infos__description">
           ${this.$recipe.description}
-        </div>
+        </p>
       </div>
     `;
 
