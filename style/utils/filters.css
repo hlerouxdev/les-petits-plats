@@ -1,0 +1,114 @@
+#filters {
+  height: 100px;
+}
+
+#filters button {
+  color: white;
+  padding: 15px 23px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+#filters__active {
+  margin: 20px 0 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+#filters__active button {
+  padding: 8px 15px;
+}
+
+#filters__active button:hover {
+  box-shadow: inset 0 0 10px 0 #000000;
+}
+
+#filters__group {
+  display: flex;
+  gap: 20px;
+  position: absolute;
+}
+
+#filters__group section {
+  position: relative;
+  padding: 15px 23px;
+  border-radius: 5px;
+  color: white;
+  height: fit-content;
+}
+
+#filters__group section[data-open="false"]:hover {
+  cursor: pointer;
+  box-shadow: inset 0 0 10px 0 #000000;
+}
+
+#filters__group section[data-open="true"] {
+  min-width: 450px;
+}
+
+#filters__group section input, #filters__group section input:focus {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 18px;
+}
+
+#filters__group section input::placeholder {
+  color: #E7E7E7;
+}
+
+#filters__group section i {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+}
+
+#filters__group section i:hover {
+  cursor: pointer;
+}
+
+.filters__button__header {
+  padding-right: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+textarea:focus, input:focus {
+  color: white;
+}
+
+.filters__button__list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.filters__button__list p {
+  margin-top: 5px;
+  width: fit-content;
+}
+
+.filters__button__list p:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.filters__ingredients {
+  background-color: #3282F7;
+}
+
+.filters__appliance {
+  background-color: #68D9A4;
+}
+
+.filters__ustensils {
+  background-color: #ED6454;
+}

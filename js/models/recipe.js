@@ -41,4 +41,35 @@ export class Recipe {
   get ustensils() {
     return this.$ustensils;
   }
+
+  createCard() {
+    let ingredientList = ''
+    this.$ingredients.map( element => {
+      ingredientList += `<p><strong>${element.ingredient}</strong>: ${element.quantity} ${element.unit ? element.unit.split(' ')[0] : ''}</p>`
+    })
+    const card = document.createElement('article');
+    card.setAttribute('class', 'recipe__card');
+    card.setAttribute('data-id', this.$id)
+    card.innerHTML = `
+      <img src="${'../assets/images/' + Math.floor(Math.random() * 9 + 1) + '.jpg' || '../assets/grey.jpg'}"
+      alt="${this.$name}">
+      <div class="recipe__card__title">
+        <h2>${this.$name}</h2>
+        <div class="recipe__card__title__time">
+          <i class="fa-regular fa-clock"></i>
+          <h2>${this.$time} min</h2>
+        </div>
+      </div>
+      <div class="recipe__card__infos">
+        <div class="recipe__card__infos__ingrediets">
+          ${ingredientList}
+        </div>
+        <p class="recipe__card__infos__description">
+          ${this.$description}
+        </p>
+      </div>
+    `;
+
+    return card;
+  }
 }

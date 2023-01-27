@@ -1,26 +1,46 @@
 import Api from '../api/Api.js';
-import { Recipe } from '../models/recipe.js';
-import { RecipeCard } from '../templates/recipeCard.js';
+import { Filter } from '../models/Filter.js';
+import { Recipe } from '../models/Recipe.js';
+import { Tag } from '../models/Tag.js';
 
 const recipesApi = await new Api('../../data/recipe.json');
-const recipesContainer = document.getElementById('recipes')
-console.log(recipesContainer);
+const recipesContainer = document.getElementById('recipes');
+const filterGroup = document.getElementById('filters__group');
 
-let allRecipes = []
+console.log(filterGroup);
 
-async function main() {
+export let allRecipes = []
+
+const filters = [
+  {
+    name: 'Ingrédient',
+    key: 'ingredients'
+  },
+  {
+    name: 'Appareil',
+    key: 'appliance'
+  },
+  {
+    name: 'Ustensil',
+    key: 'ustensils'
+  },
+]
+
+function displayFilters() {
+  filters.forEach( element => {
+    const filter = new Filter(element.name, element.key);
+    filterGroup.appendChild(filter.create());
+  })
+}
+
+async function displayRecipes() {
   const recipes = await recipesApi.get();
-  console.log(recipes);
   recipes.forEach( element => {
     const recipe = new Recipe(element);
     allRecipes.push(recipe);
-  });
-
-  allRecipes.forEach( recipe => {
-    const template = new RecipeCard(recipe);
-    console.log(template.createCard());
-    recipesContainer.appendChild(template.createCard());
+    recipesContainer.appendChild(recipe.createCard());
   });
 };
 
-main();
+displayFilters();
+displayRecipes();
