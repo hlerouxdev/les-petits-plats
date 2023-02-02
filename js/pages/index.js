@@ -6,10 +6,10 @@ import { Tag } from '../models/Tag.js';
 const recipesApi = await new Api('../../data/recipe.json');
 const recipesContainer = document.getElementById('recipes');
 const filterGroup = document.getElementById('filters__group');
+const activeFiltersContainer = document.getElementById('filters__active')
 
-console.log(filterGroup);
-
-export let allRecipes = []
+export let allRecipes = [];
+export let filteredRecipes = [];
 
 const filters = [
   {
@@ -24,7 +24,7 @@ const filters = [
     name: 'Ustensil',
     key: 'ustensils'
   },
-]
+];
 
 function displayFilters() {
   filters.forEach( element => {
@@ -33,14 +33,38 @@ function displayFilters() {
   })
 }
 
-async function displayRecipes() {
-  const recipes = await recipesApi.get();
-  recipes.forEach( element => {
-    const recipe = new Recipe(element);
-    allRecipes.push(recipe);
-    recipesContainer.appendChild(recipe.createCard());
-  });
+function displayTags(array) {
+  console.log(array);
+  array.forEach(tag =>{
+    const newTag = new Tag(tag.name, tag.type)
+    activeFiltersContainer.appendChild(newTag.create());
+  })
+}
+
+/**
+ * 
+ * @param {Array} array // expected to be the filteredRecipes array
+ */
+export function displayRecipes( array ) {
+  if(!array || array.length == 0) {
+    console.log('empty array');
+    recipesContainer.innerHTML = '<h1>Nous n\'avons pas trouvé de résultats</h1>'
+  } else {
+    console.log('good array');
+    recipesContainer.innerHTML = '' //resets the content to display a new filtered array
+    array.forEach( element => {
+      const recipe = new Recipe(element);
+      recipesContainer.appendChild(recipe.createCard());
+    });
+  }
 };
 
-displayFilters();
-displayRecipes();
+async function main() {
+  const activeTags = JSON.parse(localStorage.getItem('tags'));
+  if (activeTags) displayTags(activeTags);
+  displayFilters()
+  allRecipes = await recipesApi.get();
+  displayRecipes(allRecipes);
+}
+
+main();

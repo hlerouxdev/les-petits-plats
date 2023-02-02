@@ -43,7 +43,6 @@ export class Filter {
       tag.addEventListener('click', (e) => {
         e.stopPropagation()
         const tagName = e.target.innerText;
-        console.log(tagName);
         const newTag = new Tag(tagName, this.$key)
         activeFilters.appendChild(newTag.create());
       })

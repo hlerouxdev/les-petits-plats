@@ -1,5 +1,8 @@
+import { Modal } from "../templates/Modal.js";
+
 export class Recipe {
   constructor(data) {
+    this.$recipe = data
     this.$id = data.id;
     this.$name = data.name;
     this.$servings = data.$servings;
@@ -51,7 +54,7 @@ export class Recipe {
     card.setAttribute('class', 'recipe__card');
     card.setAttribute('data-id', this.$id)
     card.innerHTML = `
-      <img src="${'../assets/images/' + Math.floor(Math.random() * 9 + 1) + '.jpg' || '../assets/grey.jpg'}"
+      <img src="${'../assets/images/' + Math.floor(Math.random() * 10 + 1) + '.jpg' || '../assets/grey.jpg'}"
       alt="${this.$name}">
       <div class="recipe__card__title">
         <h2>${this.$name}</h2>
@@ -69,6 +72,11 @@ export class Recipe {
         </p>
       </div>
     `;
+
+    card.addEventListener('click', () => {
+      const modal = new Modal(this, ingredientList);
+      modal.createModal();
+    })
 
     return card;
   }
