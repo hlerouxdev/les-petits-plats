@@ -1,3 +1,5 @@
+import { main } from "../pages/index.js";
+
 const activeFilters = document.getElementById('filters__active')
 
 export class Tag {
@@ -28,6 +30,7 @@ export class Tag {
       localStorage.setItem('tags', JSON.stringify(
         activeTags.filter(tag => tag.name != this.$name)
       ))
+      main()
     })
 
     return tag;

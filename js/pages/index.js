@@ -2,6 +2,7 @@ import Api from '../api/Api.js';
 import { Filter } from '../models/Filter.js';
 import { Recipe } from '../models/Recipe.js';
 import { Tag } from '../models/Tag.js';
+import { filterByTag } from '../utils/search.js';
 
 const recipesApi = await new Api('../../data/recipe.json');
 const recipesContainer = document.getElementById('recipes');
@@ -55,12 +56,16 @@ export function displayRecipes( array ) {
   }
 };
 
-async function main() {
+export async function main() {
   const activeTags = JSON.parse(localStorage.getItem('tags'));
-  if (activeTags) displayTags(activeTags);
-  displayFilters()
   allRecipes = await recipesApi.get();
-  displayRecipes(allRecipes);
+  if (activeTags && activeTags.length !== 0) {
+    displayTags(activeTags)
+    activeTags.forEach(tag => filterByTag(tag.type, tag.name))
+  } else {
+    displayRecipes(allRecipes);
+  }
 }
 
+displayFilters();
 main();
