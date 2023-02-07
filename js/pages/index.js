@@ -9,7 +9,6 @@ const filterGroup = document.getElementById('filters__group');
 const activeFiltersContainer = document.getElementById('filters__active')
 
 export let allRecipes = [];
-export let filteredRecipes = [];
 
 const filters = [
   {
@@ -34,7 +33,6 @@ function displayFilters() {
 }
 
 function displayTags(array) {
-  console.log(array);
   array.forEach(tag =>{
     const newTag = new Tag(tag.name, tag.type)
     activeFiltersContainer.appendChild(newTag.create());
@@ -47,10 +45,8 @@ function displayTags(array) {
  */
 export function displayRecipes( array ) {
   if(!array || array.length == 0) {
-    console.log('empty array');
-    recipesContainer.innerHTML = '<h1>Nous n\'avons pas trouvé de résultats</h1>'
+    recipesContainer.innerHTML = '<h1>Aucune recette ne correspond à votre critère… vous pouvez chercher "tarte aux pommes", "poisson", etc.</h1>'
   } else {
-    console.log('good array');
     recipesContainer.innerHTML = '' //resets the content to display a new filtered array
     array.forEach( element => {
       const recipe = new Recipe(element);
