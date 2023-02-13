@@ -1,7 +1,7 @@
 import { Tag } from "./Tag.js";
 import { filteredRecipes } from "../utils/search.js";
 import { allRecipes } from "../pages/index.js";
-import { filterByTag } from "../utils/search.js";
+import { simplify, filterByTag, searchbarQuery, filterByActiveTags, globalFilter } from "../utils/search.js";
 
 const activeFilters = document.getElementById('filters__active')
 
@@ -37,7 +37,7 @@ export class Filter {
         })
       }
     })
-    
+
     let filterList = '';
     filters.map( filterElement => {
       filterList += `<p>${filterElement.split(' (')[0]}</p>`
@@ -45,22 +45,8 @@ export class Filter {
     return filterList
   }
 
-  openFilter(filter) {
-    const header = filter.querySelector('.filters__button__header');
-    
-    let recipesToFilter = filteredRecipes.length == 0 ? allRecipes : filteredRecipes
-    let filters = this.setFilters(recipesToFilter)
-    header.innerHTML = `
-    <input type="text" placeholder="rechercher un ${this.$name.toLowerCase()}">
-    `
-    const list = document.createElement('div');
-    list.setAttribute('class', 'filters__button__list');
-      
-    list.innerHTML = filters;
-    filter.appendChild(list)
-
-    const tags = filter.querySelectorAll('p')
-    tags.forEach(tag =>{
+  addTagEvenListener(array, container) {
+    array.forEach(tag =>{
       tag.addEventListener('click', (e) => {
         e.stopPropagation()
         const tagName = e.target.innerText;
@@ -69,9 +55,53 @@ export class Filter {
         activeFilters.appendChild(newTag.create());
         const newfilteredRecipes = filterByTag(this.$key, tagName);
         const newFilters = this.setFilters(newfilteredRecipes)
-        list.innerHTML = newFilters;
+        container.innerHTML = newFilters;
       })
     })
+  }
+
+  openFilter(filter) {
+    const header = filter.querySelector('.filters__button__header');
+
+    // setting filteredRecipes
+    let filteredRecipes = allRecipes
+    const activeTags = JSON.parse(localStorage.getItem('tags'))
+    if (activeTags && activeTags.length != 0) filteredRecipes = filterByActiveTags(filteredRecipes)
+    const searchBox = document.querySelector('.search__input');
+    if (searchBox.value > 2) filteredRecipes = searchbarQuery(filteredRecipes, searchBox.value)
+
+    // setting filters
+    let filters = this.setFilters(filteredRecipes);
+    header.innerHTML = `
+    <input type="text" placeholder="rechercher un ${this.$name.toLowerCase()}">
+    `;
+    const list = document.createElement('div');
+    list.setAttribute('class', 'filters__button__list');
+
+    list.innerHTML = filters;
+    filter.appendChild(list);
+
+    // Tag selection
+    const tags = filter.querySelectorAll('p');
+    this.addTagEvenListener(tags, list);
+
+    // Tag query
+    const input = filter.querySelector('input');
+    input.addEventListener('change', () => {
+      if (input.value.length > 2) {
+        console.log(input.value);
+        const currentTags = filter.querySelectorAll('p')
+        const newTags = [...currentTags].filter(
+          tag => simplify(tag.innerText).includes(simplify(input.value))
+        )
+        console.log('new tags', newTags);
+        list.innerHTML = ''
+        newTags.forEach(tag => {
+          list.innerHTML += `<p>${tag.innerHTML}</p>`;
+        })
+        this.addTagEvenListener(newTags, list)
+      }
+    });
   }
 
   closeFilter(filter) {

@@ -105,7 +105,10 @@ h1 {
 .recipe__card__title__time {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: right;
+  min-width: 100px;
+  gap: 20px;
+  margin-left: 40px;
 }
 
 .recipe__card__title__time i {

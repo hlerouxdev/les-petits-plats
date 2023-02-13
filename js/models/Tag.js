@@ -1,4 +1,5 @@
-import { main } from "../pages/index.js";
+import { displayRecipes } from "../pages/index.js";
+import { globalFilter } from "../utils/search.js";
 
 const activeFilters = document.getElementById('filters__active')
 
@@ -30,7 +31,8 @@ export class Tag {
       localStorage.setItem('tags', JSON.stringify(
         activeTags.filter(tag => tag.name != this.$name)
       ))
-      main()
+      let filteredRecipes = globalFilter()
+      displayRecipes(filteredRecipes)
     })
 
     return tag;
