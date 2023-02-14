@@ -1,4 +1,4 @@
-import { allRecipes } from "../pages/index.js";
+import { allRecipes, keywords } from "../pages/index.js";
 import { displayRecipes } from "../pages/index.js";
 
 const searchBox = document.querySelector('.search__input')
@@ -6,12 +6,25 @@ console.log(searchBox);
 
 let filteredRecipes = allRecipes;
 
+console.log('nominal test', 'poi'.localeCompare('poisson'));
+
 function simplify(string) {
   return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').join('').toLowerCase();
 }
 
-function compare(a, b) {
-  return simplify(a).includes(simplify(b));
+function binarySearch(array, query) {
+  let start = 0, end = array.length - 1;
+
+  while (start <= end) {
+    let mid = start + Math.floor((end - start) / 2), res = query.localeCompare(array[mid])
+    if (res == 0) return mid
+    if (res > 0) {
+      start = mid + 1
+    } else {
+      end = mid - 1
+    }
+  }
+  return -1
 }
 
 searchBox.addEventListener('change', () => {
@@ -19,20 +32,7 @@ searchBox.addEventListener('change', () => {
   const query = searchBox.value;
   if (query.length == 0 ) displayRecipes(allRecipes)
   if (query.length > 2) {
-    console.log('ok');
-    filteredRecipes = allRecipes.filter( recipe => {
-      return compare(recipe.name, query)
-      || 
-      recipe.ingredients.forEach(ingredient => {
-        if (simplify(ingredient.ingredient).includes(query)) return true
-      }) ||
-      simplify(recipe.description).includes(query) ||
-      simplify(recipe.appliance).includes(query) ||
-      recipe.ustensils.forEach(ustensil => {
-        if (simplify(ustensil).includes(query)) return true
-      })
-    })
-    console.log(filteredRecipes);
-    displayRecipes(filteredRecipes);
+    const res = binarySearch(keywords, query.toLowerCase())
+    console.log('res: ', res);
   }
 });

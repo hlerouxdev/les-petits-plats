@@ -48,6 +48,8 @@ function displayTags(array) {
 }
 
 function addkeyword (object, string) {
+  if (string.includes ('\'')) string = string.split('\'')[1]
+  string = string.split(')')[0]
   if (string.length > 2 && !string.includes('(')) {
     if (!keywordList.includes(string)) {
     keywords.push({
@@ -71,15 +73,17 @@ function createKeywords(array) {
   array.forEach( object => {
     object.ustensils.forEach( ustensil => {
       const stringChain = ustensil.split(' ')
-      stringChain.forEach(string => addkeyword(object, string.toLowerCase()))
+      stringChain.forEach(string => addkeyword(object, string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()))
     })
     object.ingredients.forEach( ingredient => {
       const stringChain = ingredient.ingredient.split(' ')
-      stringChain.forEach(string => addkeyword(object, string.toLowerCase()))
+      stringChain.forEach(string => addkeyword(object, string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()))
     })
     const stringChain = object.appliance.split(' ')
-      stringChain.forEach(string => addkeyword(object, string.toLowerCase()))
+      stringChain.forEach(string => addkeyword(object, string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()))
   })
+  keywords.sort((a, b) => a.keyword.localeCompare(b.keyword))
+  return keywords;
 }
 
 /**
@@ -104,7 +108,7 @@ async function main() {
   displayFilters()
   allRecipes = await recipesApi.get();
   displayRecipes(allRecipes);
-  createKeywords(allRecipes)
+  createKeywords(allRecipes);
   console.log('keywords', keywords);
 }
 
