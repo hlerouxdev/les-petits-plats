@@ -1,5 +1,6 @@
 import { displayRecipes } from "../pages/index.js";
 import { globalFilter } from "../utils/search.js";
+import { setFilters, addTagEvenListener } from "./Filter.js";
 
 const activeFilters = document.getElementById('filters__active')
 
@@ -15,6 +16,16 @@ export class Tag {
     localStorage.setItem('tags', JSON.stringify(activeTags))
   }
 
+  close(tag) {
+    activeFilters.removeChild(tag);
+      let activeTags = JSON.parse(localStorage.getItem('tags'))
+      localStorage.setItem('tags', JSON.stringify(
+        activeTags.filter(tag => tag.name != this.$name)
+      ))
+      let filteredRecipes = globalFilter()
+      displayRecipes(filteredRecipes)
+  }
+
   create() {
     const tag = document.createElement('button');
     if(this.$type === 'ingredients') tag.setAttribute('class', 'filters__ingredients');
@@ -26,13 +37,19 @@ export class Tag {
     `;
 
     tag.addEventListener('click', () => {
-      activeFilters.removeChild(tag);
-      let activeTags = JSON.parse(localStorage.getItem('tags'))
-      localStorage.setItem('tags', JSON.stringify(
-        activeTags.filter(tag => tag.name != this.$name)
-      ))
-      let filteredRecipes = globalFilter()
-      displayRecipes(filteredRecipes)
+      this.close(tag)
+
+      const filtersGroup = document.getElementById('filters__group')
+      filtersGroup.querySelectorAll('section').forEach(
+        filter => {
+          if (filter.getAttribute('data-open') == 'true') {
+            const list = filter.querySelector('.filters__button__list')
+            list.innerHTML = setFilters(globalFilter(), this.$type)
+            const tags = filter.querySelectorAll('p');
+            addTagEvenListener(tags, list, this.$type);
+          }
+        }
+      )
     })
 
     return tag;

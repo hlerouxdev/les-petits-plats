@@ -15,7 +15,7 @@ export class Modal {
     const modalCard = document.createElement('div');
     modalCard.setAttribute('class', 'modal-card');
     modalCard.innerHTML = `
-      <img src="${'../assets/images/' + Math.floor(Math.random() * 10 + 1) + '.jpg' || '../assets/grey.jpg'}">
+      <img src="${'../assets/images/' +  this.$recipe.id % 9 + '.jpg' || '../assets/grey.jpg'}">
       <h2>${this.$recipe.name}</h2>
       <p><strong>Temps de préparation</strong>: <i class="fa-regular fa-clock"></i> ${this.$recipe.time} minutes</p>
       ${this.$recipe.servings ? `<p>Pour ${this.$recipe.servings} personnes</p>` : '' }

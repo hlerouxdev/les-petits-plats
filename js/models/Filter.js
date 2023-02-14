@@ -1,9 +1,61 @@
 import { Tag } from "./Tag.js";
-import { filteredRecipes } from "../utils/search.js";
-import { allRecipes } from "../pages/index.js";
-import { simplify, filterByTag, searchbarQuery, filterByActiveTags, globalFilter } from "../utils/search.js";
+import { displayRecipes } from "../pages/index.js";
+import { simplify, globalFilter } from "../utils/search.js";
 
 const activeFilters = document.getElementById('filters__active')
+
+/**
+ * 
+ * @param {Array} array an array containing the recipes to be filtered
+ * @param {String} key 
+ * @returns 
+ */
+export function setFilters(array, key) {
+  let filters = []
+  array.forEach( recipe => {
+    if (key === 'appliance') {
+      if (!filters.includes(recipe[key])) filters.push(recipe[key]);
+    } else {
+      recipe[key].forEach( filterElement => {
+          if (filterElement.ingredient) {
+            if (!filters.includes(filterElement.ingredient.toLowerCase())) filters.push(filterElement.ingredient.toLowerCase()) 
+          } else {
+            if (!filters.includes(filterElement.toLowerCase())) filters.push(filterElement.toLowerCase()) 
+          }
+      })
+    }
+  })
+
+  let filterList = '';
+  filters.map( filterElement => {
+    filterList += `<p>${filterElement.split(' (')[0]}</p>`
+  })
+  return filterList
+}
+
+/**
+ * 
+ * @param {array} array the nodelist container all the tags
+ * @param {Node} container the parent element
+ * @param {string} key 
+ */
+export function addTagEvenListener(array, container, key) {
+  array.forEach(tag =>{
+    tag.addEventListener('click', (e) => {
+      e.stopPropagation()
+      const tagName = e.target.innerText;
+      const newTag = new Tag(tagName, key);
+      newTag.add();
+      activeFilters.appendChild(newTag.create());
+      const newfilteredRecipes = globalFilter();
+      const newFilters = setFilters(newfilteredRecipes, key)
+      container.innerHTML = newFilters;
+      displayRecipes(newfilteredRecipes)
+      const tags = container.querySelectorAll('p');
+      addTagEvenListener(tags, container, key)
+    })
+  })
+}
 
 export class Filter {
   constructor(name, key) {
@@ -24,54 +76,12 @@ export class Filter {
     return this.$open;
   }
 
-  setFilters(array) {
-    let filters = []
-    array.forEach( recipe => {
-      if (this.$key === 'appliance') {
-        if (!filters.includes(recipe[this.$key])) filters.push(recipe[this.$key]);
-      } else {
-        recipe[this.$key].forEach( filterElement => {
-          if (!filters.includes(filterElement)) {
-            filterElement.ingredient ? filters.push(filterElement.ingredient) : filters.push(filterElement)
-          }
-        })
-      }
-    })
-
-    let filterList = '';
-    filters.map( filterElement => {
-      filterList += `<p>${filterElement.split(' (')[0]}</p>`
-    })
-    return filterList
-  }
-
-  addTagEvenListener(array, container) {
-    array.forEach(tag =>{
-      tag.addEventListener('click', (e) => {
-        e.stopPropagation()
-        const tagName = e.target.innerText;
-        const newTag = new Tag(tagName, this.$key);
-        newTag.add();
-        activeFilters.appendChild(newTag.create());
-        const newfilteredRecipes = filterByTag(this.$key, tagName);
-        const newFilters = this.setFilters(newfilteredRecipes)
-        container.innerHTML = newFilters;
-      })
-    })
-  }
-
   openFilter(filter) {
     const header = filter.querySelector('.filters__button__header');
-
-    // setting filteredRecipes
-    let filteredRecipes = allRecipes
-    const activeTags = JSON.parse(localStorage.getItem('tags'))
-    if (activeTags && activeTags.length != 0) filteredRecipes = filterByActiveTags(filteredRecipes)
-    const searchBox = document.querySelector('.search__input');
-    if (searchBox.value > 2) filteredRecipes = searchbarQuery(filteredRecipes, searchBox.value)
+    let filteredRecipes = globalFilter();
 
     // setting filters
-    let filters = this.setFilters(filteredRecipes);
+    let filters = setFilters(filteredRecipes, this.$key);
     header.innerHTML = `
     <input type="text" placeholder="rechercher un ${this.$name.toLowerCase()}">
     `;
@@ -83,7 +93,7 @@ export class Filter {
 
     // Tag selection
     const tags = filter.querySelectorAll('p');
-    this.addTagEvenListener(tags, list);
+    addTagEvenListener(tags, list, this.$key);
 
     // Tag query
     const input = filter.querySelector('input');
@@ -99,9 +109,14 @@ export class Filter {
         newTags.forEach(tag => {
           list.innerHTML += `<p>${tag.innerHTML}</p>`;
         })
-        this.addTagEvenListener(newTags, list)
+        const tags = filter.querySelectorAll('p');
+        addTagEvenListener(tags, list, this.$key)
       }
     });
+
+    // document.addEventListener('click', e => {
+    //   if (e.target != filter && this.$open) this.closeFilter(filter)
+    // })
   }
 
   closeFilter(filter) {
@@ -110,7 +125,7 @@ export class Filter {
       ${this.$name}s
     `;
     const list = filter.querySelector('.filters__button__list');
-    filter.removeChild(list);
+    if (list) filter.removeChild(list);
   }
 
   create() {

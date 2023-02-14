@@ -3,8 +3,6 @@ import { displayRecipes } from "../pages/index.js";
 
 const searchBox = document.querySelector('.search__input');
 
-export let filteredRecipes = [];
-
 export function simplify(string) {
   return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').join('').toLowerCase();
 };
@@ -20,8 +18,14 @@ function compare(a, b) {
 };
 
 // main search bar query functions
+/**
+ * 
+ * @param {Array} array 
+ * @param {String} query 
+ * @returns 
+ */
 export function searchbarQuery(array, query) {
-  filteredRecipes = array.filter( recipe => {
+  const filteredRecipes = array.filter( recipe => {
     return compare(recipe.name, query)
     || 
     recipe.ingredients.forEach(ingredient => {
@@ -36,16 +40,17 @@ export function searchbarQuery(array, query) {
   return filteredRecipes
 }
 
-searchBox.addEventListener('keyup', () => {
+searchBox.addEventListener('change', () => {
+  if(searchBox.value.length == 0) displayRecipes(globalFilter())
   if(searchBox.value.length > 2) displayRecipes(globalFilter())
 });
 
 //filters query function
 /**
  * 
- * @param {string} type the type of filter. Should be either "ingredients", "apparel" or "ustensils"
- * @param {string} name 
- * @param {array} array 
+ * @param {String} type the type of filter. Should be either "ingredients", "apparel" or "ustensils"
+ * @param {String} name 
+ * @param {Array} array 
  * @returns 
  */
 export function filterByTag(type, name, array) {
@@ -53,12 +58,20 @@ export function filterByTag(type, name, array) {
     if (type == 'ingredients') {
       let contains = false
       recipe.ingredients.forEach(ingredient => {
-        if (ingredient.ingredient == name ) contains = true
+        if (simplify(ingredient.ingredient).includes(simplify(name)) ) contains = true
       })
       return contains
     }
-    if (type == 'appliance' && recipe.appliance == name) return true;
-    if (type == 'ustensils' && recipe.ustensils.includes(name)) return true;
+    if (type == 'appliance' && simplify(recipe.appliance).includes(simplify(name))) return true;
+    if (type == 'ustensils') {
+      let contains = false
+      recipe.ustensils.forEach(ustensil => {
+        if (simplify(ustensil).includes(simplify(name))) {
+          contains = true
+        }
+      })
+      return contains
+    };
   })
   return filteredRecipes;
 }
