@@ -9,7 +9,13 @@ const filterGroup = document.getElementById('filters__group');
 const activeFiltersContainer = document.getElementById('filters__active')
 
 export let allRecipes = [];
-export let filteredRecipes = [];
+let keywordList = [];
+export let keywords = [
+  // {
+  //   keyword: String,
+  //   recipesId: []
+  // }
+]
 
 const filters = [
   {
@@ -41,16 +47,49 @@ function displayTags(array) {
   })
 }
 
+function addkeyword (object, string) {
+  if (string.length > 2 && !string.includes('(')) {
+    if (!keywordList.includes(string)) {
+    keywords.push({
+      keyword: string,
+      recipesId: [object.id]
+    })
+    keywordList.push(string)
+  } 
+  else {
+      const keyword = keywords.find( el => {
+        if (el.keyword === string) return el
+      })
+      keyword.recipesId.push(object.id)
+    }
+  }
+}
+
+function createKeywords(array) {
+  keywordList = [];
+  keywords = [];
+  array.forEach( object => {
+    object.ustensils.forEach( ustensil => {
+      const stringChain = ustensil.split(' ')
+      stringChain.forEach(string => addkeyword(object, string.toLowerCase()))
+    })
+    object.ingredients.forEach( ingredient => {
+      const stringChain = ingredient.ingredient.split(' ')
+      stringChain.forEach(string => addkeyword(object, string.toLowerCase()))
+    })
+    const stringChain = object.appliance.split(' ')
+      stringChain.forEach(string => addkeyword(object, string.toLowerCase()))
+  })
+}
+
 /**
  * 
  * @param {Array} array // expected to be the filteredRecipes array
  */
 export function displayRecipes( array ) {
   if(!array || array.length == 0) {
-    console.log('empty array');
     recipesContainer.innerHTML = '<h1>Nous n\'avons pas trouvé de résultats</h1>'
   } else {
-    console.log('good array');
     recipesContainer.innerHTML = '' //resets the content to display a new filtered array
     array.forEach( element => {
       const recipe = new Recipe(element);
@@ -65,6 +104,8 @@ async function main() {
   displayFilters()
   allRecipes = await recipesApi.get();
   displayRecipes(allRecipes);
+  createKeywords(allRecipes)
+  console.log('keywords', keywords);
 }
 
 main();

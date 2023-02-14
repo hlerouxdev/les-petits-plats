@@ -54,7 +54,7 @@ export class Recipe {
     card.setAttribute('class', 'recipe__card');
     card.setAttribute('data-id', this.$id)
     card.innerHTML = `
-      <img src="${'../assets/images/' + Math.floor(Math.random() * 10 + 1) + '.jpg' || '../assets/grey.jpg'}"
+      <img src="${'../assets/images/' + this.$id % 9 + '.jpg' || '../assets/grey.jpg'}"
       alt="${this.$name}">
       <div class="recipe__card__title">
         <h2>${this.$name}</h2>

@@ -14,15 +14,6 @@ function compare(a, b) {
   return simplify(a).includes(simplify(b));
 }
 
-//
-// globalFilter(searchParam) {
-
-// };
-
-// targetedFilter(searchParam, key) {
-
-// };
-
 searchBox.addEventListener('change', () => {
   console.log(allRecipes);
   const query = searchBox.value;
