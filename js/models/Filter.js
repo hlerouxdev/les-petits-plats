@@ -1,6 +1,6 @@
 import { Tag } from "./Tag.js";
 
-const activeFilters = document.getElementById('filters__active')
+const activeFilters = document.getElementById('filters__active');
 
 export class Filter {
   constructor(name, key) {

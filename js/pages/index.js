@@ -6,7 +6,7 @@ import { Tag } from '../models/Tag.js';
 const recipesApi = await new Api('../../data/recipe.json');
 const recipesContainer = document.getElementById('recipes');
 const filterGroup = document.getElementById('filters__group');
-const activeFiltersContainer = document.getElementById('filters__active')
+const activeFiltersContainer = document.getElementById('filters__active');
 
 export let allRecipes = [];
 let keywordList = [];
@@ -41,7 +41,7 @@ function displayFilters() {
 
 function displayTags(array) {
   array.forEach(tag =>{
-    const newTag = new Tag(tag.name, tag.type)
+    const newTag = new Tag(tag.name, tag.type);
     activeFiltersContainer.appendChild(newTag.create());
   })
 }
@@ -87,6 +87,7 @@ function createKeywords(array) {
     })
   })
   keywords.sort((a, b) => a.keyword.localeCompare(b.keyword))
+  console.log(keywords);
   return keywords;
 }
 

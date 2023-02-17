@@ -2,11 +2,6 @@ import { allRecipes, keywords } from "../pages/index.js";
 import { displayRecipes } from "../pages/index.js";
 
 const searchBox = document.querySelector('.search__input')
-console.log(searchBox);
-
-let filteredRecipes = allRecipes;
-
-console.log('nominal test', 'pois'.localeCompare('poisson'));
 
 function simplify(string) {
   return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').join('').toLowerCase();
@@ -14,8 +9,8 @@ function simplify(string) {
 
 /**
  * 
- * @param {Array} array Array of keywords
- * @param {String} query String to match keywords
+ * @param {Array} array Array of keywords for string query, or array of recipes for number query
+ * @param {String} query String to match keywords, or recipe id
  * @returns 
  */
 function binarySearch(array, query) {
@@ -27,7 +22,6 @@ function binarySearch(array, query) {
     const res = typeof(query) === 'string' ? 
       query.localeCompare(array[mid].keyword.slice(0, length)) :
       query - 1 - mid;
-
     // query matches the middle index
     if (res == 0) {
       if (typeof(query) === 'string' ) {
@@ -62,7 +56,6 @@ function binarySearch(array, query) {
         return array[mid]
       }
     }
-
     //mid does not match query
     if (res > 0) {
       start = mid + 1
@@ -90,17 +83,27 @@ function findFiteredRecipes(array, results) {
       return resultIds.map(id => binarySearch(array, id));
 }
 
+export function filterRecipes(array, query) {
+  const querries = query.split(' ')
+  const arrRes = querries.length === 1 ?
+    binarySearch(keywords, simplify(query))
+    :
+    querries.map( string => arrRes.concat(binarySearch(keywords, string)))
+  console.log(arrRes);
+  // const arrRes = binarySearch(keywords, query)
+  if (arrRes !== -1) {
+    const filteredRecipes = findFiteredRecipes(array, arrRes)
+    return filteredRecipes;
+  } else {
+    return [];
+  }
+}
+
 searchBox.addEventListener('change', () => {
   const query = searchBox.value;
   if (query.length == 0 ) displayRecipes(allRecipes);
   if (query.length > 2) {
-    const arrRes = binarySearch(keywords, query.toLowerCase());
-    if (arrRes !== -1) {
-      const filteredRecipes = findFiteredRecipes(allRecipes, arrRes)
-      displayRecipes(filteredRecipes);
-      return filteredRecipes;
-    } else {
-      displayRecipes([]);
-    }
+    const res = filterRecipes(allRecipes, query)
+    displayRecipes(res)
   }
 });
