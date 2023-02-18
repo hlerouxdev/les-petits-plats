@@ -13,7 +13,7 @@ function simplify(string) {
  * @param {String} query String to match keywords, or recipe id
  * @returns 
  */
-function binarySearch(array, query) {
+export function binarySearch(array, query) {
   const length = query.length;
   let start = 0, end = array.length - 1;
 
@@ -21,7 +21,8 @@ function binarySearch(array, query) {
     let mid = start + Math.floor((end - start) / 2);
     const res = typeof(query) === 'string' ? 
       query.localeCompare(array[mid].keyword.slice(0, length)) :
-      query - 1 - mid;
+      query - array[mid].id;
+
     // query matches the middle index
     if (res == 0) {
       if (typeof(query) === 'string' ) {

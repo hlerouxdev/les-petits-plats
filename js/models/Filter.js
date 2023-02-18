@@ -1,6 +1,43 @@
+import { allRecipes } from "../pages/index.js";
+import { binarySearch, filterRecipes } from "../utils/search.js";
 import { Tag } from "./Tag.js";
 
 const activeFilters = document.getElementById('filters__active');
+
+export function setfilters(key) {
+  const tags = JSON.parse(localStorage.getItem('tags'));
+  const searchBox = document.querySelector('.search__input');
+
+  let filteredRecipes = searchBox.value/length > 2 ?
+    filterRecipes(allRecipes, searchBox.value)
+    :
+    allRecipes
+
+  // if (tags && tags.length !== 0) {
+  //   filteredRecipes = 
+  // }
+
+  let filters = []
+  filteredRecipes.forEach( recipe => {
+    if (key === 'appliance') {
+      if (!filters.includes(recipe[key])) filters.push(recipe[key]);
+    } else {
+      recipe[key].forEach( filterElement => {
+          if (filterElement.ingredient) {
+            if (!filters.includes(filterElement.ingredient.toLowerCase())) filters.push(filterElement.ingredient.toLowerCase()) 
+          } else {
+            if (!filters.includes(filterElement.toLowerCase())) filters.push(filterElement.toLowerCase()) 
+          }
+      })
+    }
+  })
+
+  let filterList = '';
+  filters.map( filterElement => {
+    filterList += `<p>${filterElement.split(' (')[0]}</p>`
+  })
+  return filterList
+}
 
 export class Filter {
   constructor(name, key) {
@@ -29,13 +66,7 @@ export class Filter {
     const list = document.createElement('div');
     list.setAttribute('class', 'filters__button__list');
       
-    list.innerHTML = `
-      <p>${this.name} 1</p>
-      <p>${this.name} 2</p>
-      <p>${this.name} 3</p>
-      <p>${this.name} 4</p>
-      <p>${this.name} 5</p>
-    `;
+    list.innerHTML = setfilters(this.$key)
     filter.appendChild(list)
 
     const tags = filter.querySelectorAll('p')
