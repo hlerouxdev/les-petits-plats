@@ -3,7 +3,7 @@ import { displayRecipes } from "../pages/index.js";
 
 const searchBox = document.querySelector('.search__input')
 
-function simplify(string) {
+export function simplify(string) {
   return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').join('').toLowerCase();
 }
 
@@ -67,6 +67,29 @@ export function binarySearch(array, query) {
   return -1
 }
 
+function tagFilter(array, tag, type) {
+  const filteredRecipes = array.filter(recipe => {
+    if (type == 'ingredients') {
+      let contains = false
+      recipe.ingredients.forEach(ingredient => {
+        if (simplify(ingredient.ingredient).includes(simplify(tag)) ) contains = true
+      })
+      return contains
+    }
+    if (type == 'appliance' && simplify(recipe.appliance).includes(simplify(tag))) return true;
+    if (type == 'ustensils') {
+      let contains = false
+      recipe.ustensils.forEach(ustensil => {
+        if (simplify(ustensil).includes(simplify(tag))) {
+          contains = true
+        }
+      })
+      return contains
+    };
+  })
+  return filteredRecipes;
+}
+
 /**
  * function to be called after binarySearch() to get the matching recipes
  * @param {Array} array the array of recipes to be filtered
@@ -84,27 +107,51 @@ function findFiteredRecipes(array, results) {
       return resultIds.map(id => binarySearch(array, id));
 }
 
-export function filterRecipes(array, query) {
-  const querries = query.split(' ')
-  const arrRes = querries.length === 1 ?
-    binarySearch(keywords, simplify(query))
-    :
-    querries.map( string => arrRes.concat(binarySearch(keywords, string)))
-  console.log(arrRes);
-  // const arrRes = binarySearch(keywords, query)
-  if (arrRes !== -1) {
-    const filteredRecipes = findFiteredRecipes(array, arrRes)
-    return filteredRecipes;
-  } else {
-    return [];
+/**
+ * 
+ * @param {Array} array 
+ * @param {String} query 
+ * @returns 
+ */
+export function filterRecipes() {
+  let filteredRecipes = allRecipes
+  let arrRes = []
+  //searchbar query
+  const query = searchBox.value;
+  const activeTags = JSON.parse(localStorage.getItem('tags'))
+  if (activeTags && activeTags.length > 0) {
+    activeTags.forEach(tag => {
+      filteredRecipes = tagFilter(filteredRecipes, tag.name, tag.type)
+    })
   }
+  if (query.length > 2) {
+    const querries = query.split(' ')
+    if (querries.length === 1) {
+      arrRes = binarySearch(keywords, simplify(query))
+    }
+    else {
+      querries.map( string => {
+        if (string.length > 2) {
+          const stringRes = (binarySearch(keywords, string))
+          if (stringRes != -1) {
+            stringRes.forEach( id => {
+              if (!arrRes.includes(id)) arrRes.push(id)
+            })
+          }
+        }
+      })
+    }
+    if (arrRes !== -1) {
+      filteredRecipes = findFiteredRecipes(filteredRecipes, arrRes)
+    } else {
+      filterRecipes = [];
+    }
+  }
+
+  return filteredRecipes;
 }
 
 searchBox.addEventListener('change', () => {
-  const query = searchBox.value;
-  if (query.length == 0 ) displayRecipes(allRecipes);
-  if (query.length > 2) {
-    const res = filterRecipes(allRecipes, query)
-    displayRecipes(res)
-  }
+  const filteredRecipes = filterRecipes();
+  displayRecipes(filteredRecipes);
 });

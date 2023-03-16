@@ -2,20 +2,16 @@ import Api from '../api/Api.js';
 import { Filter } from '../models/Filter.js';
 import { Recipe } from '../models/Recipe.js';
 import { Tag } from '../models/Tag.js';
+import { filterRecipes } from '../utils/search.js';
 
-const recipesApi = await new Api('../../data/recipe.json');
+const recipesApi = new Api('../../data/recipe.json');
 const recipesContainer = document.getElementById('recipes');
 const filterGroup = document.getElementById('filters__group');
 const activeFiltersContainer = document.getElementById('filters__active');
 
 export let allRecipes = [];
 let keywordList = [];
-export let keywords = [
-  // {
-  //   keyword: String,
-  //   recipesId: []
-  // }
-]
+export let keywords = []
 
 const filters = [
   {
@@ -46,6 +42,13 @@ function displayTags(array) {
   })
 }
 
+// Keywords array creation
+
+/**
+ * 
+ * @param {Object} object 
+ * @param {String} string 
+ */
 function addkeyword (object, string) {
   if (string.includes ('\'')) string = string.split('\'')[1]
   string = string.split(')')[0]
@@ -67,17 +70,31 @@ function addkeyword (object, string) {
 }
 
 
-//splits a string into its different components and calls addKeyword for each
+/**
+ * splits a string into its different components and calls addKeyword for each
+ * @param {Object} object 
+ * @param {String} value 
+ */
 function splitString (object, value) {
   const stringChain = value.split(' ')
   stringChain.forEach(string => addkeyword(object, string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()))
 }
 
+/**
+ * Expected keyword object should look like this:
+ * {
+ *   keyword: String,
+ *   recipesId: []
+ * }
+ * @param {Array} array 
+ * @returns an array containing each keyword and its related recipes' ids
+ */
 function createKeywords(array) {
   keywordList = [];
   keywords = [];
   array.forEach( object => {
     splitString(object, object.name)
+    splitString(object, object.description.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,''))
     splitString(object, object.appliance)
     object.ustensils.forEach( ustensil => {
       splitString(object, ustensil)
@@ -87,7 +104,6 @@ function createKeywords(array) {
     })
   })
   keywords.sort((a, b) => a.keyword.localeCompare(b.keyword))
-  console.log(keywords);
   return keywords;
 }
 
@@ -107,14 +123,20 @@ export function displayRecipes( array ) {
   }
 };
 
+// main function call
+
 async function main() {
-  const activeTags = JSON.parse(localStorage.getItem('tags'));
-  if (activeTags) displayTags(activeTags);
   displayFilters()
   allRecipes = await recipesApi.get();
-  console.log(allRecipes)
-  displayRecipes(allRecipes);
   createKeywords(allRecipes);
+  const activeTags = JSON.parse(localStorage.getItem('tags'));
+  if (activeTags) {
+    displayTags(activeTags);
+    const filteredRecipes = filterRecipes();
+    displayRecipes(filteredRecipes)
+    return
+  };
+  displayRecipes(allRecipes);
 }
 
 main();

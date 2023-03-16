@@ -1,22 +1,24 @@
-import { allRecipes } from "../pages/index.js";
-import { binarySearch, filterRecipes } from "../utils/search.js";
+import { allRecipes, displayRecipes } from "../pages/index.js";
+import { simplify, filterRecipes } from "../utils/search.js";
 import { Tag } from "./Tag.js";
 
 const activeFilters = document.getElementById('filters__active');
 
-export function setfilters(key) {
-  const tags = JSON.parse(localStorage.getItem('tags'));
-  const searchBox = document.querySelector('.search__input');
+/**
+ * Fills the container element with the list of filters depending on the key
+ * @param {String} key 
+ * @param {Node} container
+ */
+export function setFilters(key, container) {
+  const activeTags = JSON.parse(localStorage.getItem('tags'));
+  let filteredRecipes
+  if ( activeTags && activeTags !== []) {
+    filteredRecipes = filterRecipes()
+  } else {
+    filteredRecipes = allRecipes
+  }
 
-  let filteredRecipes = searchBox.value/length > 2 ?
-    filterRecipes(allRecipes, searchBox.value)
-    :
-    allRecipes
-
-  // if (tags && tags.length !== 0) {
-  //   filteredRecipes = 
-  // }
-
+  // setting filters array by removing duplicates and then sorting them alphabetically
   let filters = []
   filteredRecipes.forEach( recipe => {
     if (key === 'appliance') {
@@ -32,11 +34,51 @@ export function setfilters(key) {
     }
   })
 
+  // removing filter if its tag is already active
+  activeTags.forEach(tag => {
+    filters.forEach( filter => {
+      console.log( tag, filter);
+      if ( tag.name == filter ) {
+        const i = filters.findIndex( name => name == filter )
+        filters.splice(i, 1);
+      }
+    })
+  })
+
+  // filling filters html
   let filterList = '';
+  filters.sort((a, b) => a.localeCompare(b))
   filters.map( filterElement => {
     filterList += `<p>${filterElement.split(' (')[0]}</p>`
   })
-  return filterList
+  container.innerHTML = filterList
+}
+
+/**
+ * 
+ * @param {Array} array the nodelist container all the tags
+ * @param {Node} container the parent element
+ * @param {String} key 
+ */
+export function addTagEvenListener(array, container, key) {
+  array.forEach(tag =>{
+    tag.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      // creating tag and adding tag to html
+      const tagName = e.target.innerText;
+      const newTag = new Tag(tagName, key);
+      newTag.add();
+      activeFilters.appendChild(newTag.create());
+
+      // filtering new recipes and updating the filter's tag list
+      const newfilteredRecipes = filterRecipes();
+      setFilters(key, container);
+      displayRecipes(newfilteredRecipes);
+      const tags = container.querySelectorAll('p');
+      addTagEvenListener(tags, container, key);
+    })
+  })
 }
 
 export class Filter {
@@ -66,18 +108,32 @@ export class Filter {
     const list = document.createElement('div');
     list.setAttribute('class', 'filters__button__list');
       
-    list.innerHTML = setfilters(this.$key)
+    setFilters(this.$key, list)
     filter.appendChild(list)
 
     const tags = filter.querySelectorAll('p')
-    tags.forEach(tag =>{
-      tag.addEventListener('click', (e) => {
-        e.stopPropagation()
-        const tagName = e.target.innerText;
-        const newTag = new Tag(tagName, this.$key)
-        activeFilters.appendChild(newTag.create());
-      })
-    })
+    addTagEvenListener(tags, list, this.$key)
+
+    // filter search
+    const input = filter.querySelector('input');
+    input.addEventListener('change', () => {
+      if (input.value.length > 2) {
+        console.log(input.value);
+        const currentTags = filter.querySelectorAll('p')
+        const newTags = [...currentTags].filter(
+          tag => simplify(tag.innerText).includes(simplify(input.value))
+        )
+        console.log('new tags', newTags);
+        list.innerHTML = ''
+        newTags.forEach(tag => {
+          list.innerHTML += `<p>${tag.innerHTML}</p>`;
+        })
+        const tags = filter.querySelectorAll('p');
+        addTagEvenListener(tags, list, this.$key)
+        displayRecipes(filterRecipes());
+      }
+    });
+
   }
 
   closeFilter(filter) {
