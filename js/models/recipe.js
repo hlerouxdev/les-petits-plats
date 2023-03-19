@@ -48,7 +48,7 @@ export class Recipe {
   createCard() {
     let ingredientList = ''
     this.$ingredients.map( element => {
-      ingredientList += `<p><strong>${element.ingredient}</strong>: ${element.quantity} ${element.unit ? element.unit.split(' ')[0] : ''}</p>`
+      ingredientList += `<p><strong>${element.ingredient}</strong>${element.quantity ? ': ' + element.quantity : ''} ${element.unit ? element.unit.split(' ')[0] : ''}</p>`
     })
     const card = document.createElement('article');
     card.setAttribute('class', 'recipe__card');
