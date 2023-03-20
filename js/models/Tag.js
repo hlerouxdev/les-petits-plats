@@ -47,7 +47,6 @@ export class Tag {
             const list = filter.querySelector('.filters__button__list')
             list.innerHTML = setFilters(globalFilter(), type)
             const tags = filter.querySelectorAll('p');
-            console.log(tags, list, type);
             addTagEvenListener(tags, list, type);
           }
         }

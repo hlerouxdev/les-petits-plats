@@ -11,7 +11,6 @@ const activeFilters = document.getElementById('filters__active')
  * @returns 
  */
 export function setFilters(array, key) {
-  console.log(array, key);
   let filters = []
   array.forEach( recipe => {
     if (key === 'appliance') {
@@ -100,12 +99,10 @@ export class Filter {
     const input = filter.querySelector('input');
     input.addEventListener('change', () => {
       if (input.value.length > 2) {
-        console.log(input.value);
         const currentTags = filter.querySelectorAll('p')
         const newTags = [...currentTags].filter(
           tag => simplify(tag.innerText).includes(simplify(input.value))
         )
-        console.log('new tags', newTags);
         list.innerHTML = ''
         newTags.forEach(tag => {
           list.innerHTML += `<p>${tag.innerHTML}</p>`;
