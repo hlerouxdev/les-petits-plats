@@ -11,6 +11,7 @@ const activeFilters = document.getElementById('filters__active')
  * @returns 
  */
 export function setFilters(array, key) {
+  console.log(array, key);
   let filters = []
   array.forEach( recipe => {
     if (key === 'appliance') {
@@ -132,7 +133,8 @@ export class Filter {
     const filter = document.createElement('section');
     filter.setAttribute('class', `filters__${this.$key} filters__button`);
     filter.setAttribute('role', 'button');
-    filter.setAttribute('data-open', 'false')
+    filter.setAttribute('data-type', this.$key)
+    filter.setAttribute('data-open', 'false');
     filter.innerHTML = `
     <div class="filters__button__header">
       ${this.$name}s

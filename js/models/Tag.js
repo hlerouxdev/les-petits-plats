@@ -43,10 +43,12 @@ export class Tag {
       filtersGroup.querySelectorAll('section').forEach(
         filter => {
           if (filter.getAttribute('data-open') == 'true') {
+            const type = filter.getAttribute('data-type')
             const list = filter.querySelector('.filters__button__list')
-            list.innerHTML = setFilters(globalFilter(), this.$type)
+            list.innerHTML = setFilters(globalFilter(), type)
             const tags = filter.querySelectorAll('p');
-            addTagEvenListener(tags, list, this.$type);
+            console.log(tags, list, type);
+            addTagEvenListener(tags, list, type);
           }
         }
       )
