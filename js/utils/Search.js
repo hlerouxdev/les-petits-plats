@@ -1,5 +1,6 @@
 import { allRecipes, keywords } from "../pages/index.js";
 import { displayRecipes } from "../pages/index.js";
+import { setFilters, addTagEvenListener } from "../models/Filter.js";
 
 const searchBox = document.querySelector('.search__input')
 
@@ -150,10 +151,25 @@ export function filterRecipes() {
       filteredRecipes = tagFilter(filteredRecipes, tag.name, tag.type)
     })
   }
+
   return filteredRecipes;
 }
 
 searchBox.addEventListener('change', () => {
   const filteredRecipes = filterRecipes();
   displayRecipes(filteredRecipes);
+
+  //update filters if open
+  const filtersGroup = document.getElementById('filters__group');
+  filtersGroup.querySelectorAll('section').forEach(
+    filter => {
+      if (filter.getAttribute('data-open') == 'true') {
+        const type = filter.getAttribute('data-type');
+        const list = filter.querySelector('.filters__button__list');
+        setFilters(type, list);
+        const tags = filter.querySelectorAll('p');
+        addTagEvenListener(tags, list, type);
+      }
+    }
+  )
 });
