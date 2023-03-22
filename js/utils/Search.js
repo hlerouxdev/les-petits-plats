@@ -116,17 +116,9 @@ function findFiteredRecipes(array, results) {
 export function filterRecipes() {
   let filteredRecipes = allRecipes;
   let arrRes = [];
-  const query = searchBox.value;
-
-  // filter by tag
-  const activeTags = JSON.parse(localStorage.getItem('tags'));
-  if (activeTags && activeTags.length > 0) {
-    activeTags.forEach(tag => {
-      filteredRecipes = tagFilter(filteredRecipes, tag.name, tag.type)
-    })
-  }
 
   // searchbar query
+  const query = searchBox.value;
   if (query.length > 2) {
     const querries = query.split(' ')
     if (querries.length === 1) {
@@ -147,10 +139,17 @@ export function filterRecipes() {
     if (arrRes !== -1) {
       filteredRecipes = findFiteredRecipes(filteredRecipes, arrRes)
     } else {
-      filterRecipes = [];
+      filteredRecipes = [];
     }
   }
-  console.log(filteredRecipes);
+
+  // filter by tag
+  const activeTags = JSON.parse(localStorage.getItem('tags'));
+  if (activeTags && activeTags.length > 0) {
+    activeTags.forEach(tag => {
+      filteredRecipes = tagFilter(filteredRecipes, tag.name, tag.type)
+    })
+  }
   return filteredRecipes;
 }
 
