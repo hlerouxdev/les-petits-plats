@@ -37,7 +37,6 @@ export function setFilters(key, container) {
   // removing filter if its tag is already active
   activeTags.forEach(tag => {
     filters.forEach( filter => {
-      console.log( tag, filter);
       if ( tag.name == filter ) {
         const i = filters.findIndex( name => name == filter )
         filters.splice(i, 1);
@@ -118,12 +117,10 @@ export class Filter {
     const input = filter.querySelector('input');
     input.addEventListener('change', () => {
       if (input.value.length > 2) {
-        console.log(input.value);
         const currentTags = filter.querySelectorAll('p')
         const newTags = [...currentTags].filter(
           tag => simplify(tag.innerText).includes(simplify(input.value))
         )
-        console.log('new tags', newTags);
         list.innerHTML = ''
         newTags.forEach(tag => {
           list.innerHTML += `<p>${tag.innerHTML}</p>`;
@@ -149,7 +146,8 @@ export class Filter {
     const filter = document.createElement('section');
     filter.setAttribute('class', `filters__${this.$key} filters__button`);
     filter.setAttribute('role', 'button');
-    filter.setAttribute('data-open', 'false')
+    filter.setAttribute('data-open', 'false');
+    filter.setAttribute('data-type', this.$key);
     filter.innerHTML = `
     <div class="filters__button__header">
       ${this.$name}s

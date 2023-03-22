@@ -1,4 +1,5 @@
 import { filterRecipes } from "../utils/search.js";
+import { setFilters, addTagEvenListener } from "./Filter.js";
 import { displayRecipes } from "../pages/index.js";
 
 const activeFilters = document.getElementById('filters__active')
@@ -36,8 +37,21 @@ export class Tag {
     `;
 
     tag.addEventListener('click', () => {
-      displayRecipes(filterRecipes())
-      this.close(tag)
+      displayRecipes(filterRecipes());
+      this.close(tag);
+
+      const filtersGroup = document.getElementById('filters__group');
+      filtersGroup.querySelectorAll('section').forEach(
+        filter => {
+          if (filter.getAttribute('data-open') == 'true') {
+            const type = filter.getAttribute('data-type');
+            const list = filter.querySelector('.filters__button__list');
+            setFilters(type, list);
+            const tags = filter.querySelectorAll('p');
+            addTagEvenListener(tags, list, type);
+          }
+        }
+      )
     })
 
     return tag;

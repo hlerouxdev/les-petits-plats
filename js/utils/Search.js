@@ -114,16 +114,19 @@ function findFiteredRecipes(array, results) {
  * @returns 
  */
 export function filterRecipes() {
-  let filteredRecipes = allRecipes
-  let arrRes = []
-  //searchbar query
+  let filteredRecipes = allRecipes;
+  let arrRes = [];
   const query = searchBox.value;
-  const activeTags = JSON.parse(localStorage.getItem('tags'))
+
+  // filter by tag
+  const activeTags = JSON.parse(localStorage.getItem('tags'));
   if (activeTags && activeTags.length > 0) {
     activeTags.forEach(tag => {
       filteredRecipes = tagFilter(filteredRecipes, tag.name, tag.type)
     })
   }
+
+  // searchbar query
   if (query.length > 2) {
     const querries = query.split(' ')
     if (querries.length === 1) {
@@ -147,7 +150,7 @@ export function filterRecipes() {
       filterRecipes = [];
     }
   }
-
+  console.log(filteredRecipes);
   return filteredRecipes;
 }
 
